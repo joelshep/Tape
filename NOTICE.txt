@@ -1,0 +1,7 @@
+org-ulithi-tape
+Copyright 2025 Joel Shepherd
+
+Licensed under the MIT License. See LICENSE.txt for details.
+
+A simple commandline application for running and debugging Turing Machine programs. See
+README.md for getting-starting instructions.

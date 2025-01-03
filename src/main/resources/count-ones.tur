@@ -1,0 +1,33 @@
+1 0 0 1 0 1 0 0 1
+scanl
+;; Counts, in binary, the number of 1's in the initial tape sequence (as set by the first line
+;; in this program. Note that this is currently "destructive": the 1's in the original sequence
+;; will be overwritten with x's. The count will be present in the squares immediately to the
+;; left of the initial tape sequence, separated from the sequence by a square containing 'e': e.g.
+;; 1 0 0 e x 0 0 x 0 x 0 0 x
+;;
+;; You can provide a different binary sequence to initialize the tape with, and observe the
+;; results.
+;; scan1 Initializes the initial count (0), or scans left until it finds the 'e' separating
+;; the count from the initial sequence, before incremeenting the count.
+scanl   null P:e L P:0 R R findone
+scanl   0    L             scanl
+scanl   1    L             scanl
+scanl   x    L             scanl
+scanl   e    N             addone
+;; Starting from the 'e' separator, scan right to find the next '1' in the sequence and
+;; replace it with an 'x' (to indicate it's been processed).
+findone null H             findone
+findone e    R             findone
+findone x    R             findone
+findone 0    R             findone
+findone 1    P:x           scanl
+;; Starting from the 'e' separator, increment the count by one.
+addone  null P:1           iter
+addone  e    L             addone
+addone  1    P:0 L         addone
+addone  0    P:1           iter
+;; Scan over the count to find the 'e' separator before searching for the next '1'.
+iter    0    R             iter
+iter    1    R             iter
+iter    e    R             findone

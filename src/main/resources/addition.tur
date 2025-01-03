@@ -1,0 +1,22 @@
+0 1 0   1 1 0
+b1
+;; Adds the two binary numbers specified by initial tape sequence (the first line of this
+;; program). Does this by decrementing the second number by one, then incrementing the first
+;; number by one, until the second number has been decremented to zero, thus "transferring" all
+;; the 1's from the second number to the first. Based on the excellent introduction to Turing
+;; Machines published by @samwho: https://samwho.dev/turing-machines/ .
+b1 null R      b2
+b1 0    R      b1
+b1 1    R      b1
+b2 null L      dec
+b2 0    R      b2
+b2 1    R      b2
+b3 null L      inc
+b3 0    L      b3
+b3 1    L      b3
+dec null H     dec
+dec 0    P:1 L dec
+dec 1    P:0 L b3
+inc null P:1 R b1
+inc 0    P:1 R b1
+inc 1    P:0 L inc
