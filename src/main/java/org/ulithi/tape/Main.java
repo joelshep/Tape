@@ -106,7 +106,7 @@ public class Main {
             return;
         }
 
-        Program program = Reader.parseSource(source);
+        Program program = Parser.parseSource(source);
 
         Machine machine = new Machine();
         machine.setDebug(debug);

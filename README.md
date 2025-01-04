@@ -80,11 +80,11 @@ of the machine.
 For this implementation, a program has three main sections: an initial tape configuration (required,
 but can be empty), and initial state (required), and one or more "configurations", which map a
 potential state of the machine (what Turing referred to as its m-configuration) to its
-corresponding behavior, which is one or more of the fundamental instructions, followed by
-the state the machine should enter after the last instruction is carried out. The combination
-of instructions and ending state are referred to as a "move". Full-line comments have a ";;"
-prefix, and can appear anywhere after the lines specifying the initial tape configuration and
-state.
+corresponding behavior, which is one or more of the fundamental instructions, separated by
+commas, followed by the state the machine should enter after the last instruction is carried out.
+The combination of instructions and ending state are referred to as a "move". Full-line comments
+have a ";;" prefix, and can appear anywhere after the lines specifying the initial tape
+configuration and state.
 
 Here is an example program which prints alternating 1's and 0's on every other square:
 ```
@@ -93,8 +93,8 @@ b
 ;; A single-state program that prints alternating 1's and 0's on every other square.
 ;; Lifted directly from "On Computable Numbers", chapter 3.
 b null P:0     b
-b 0    R R P:1 b
-b 1    R R P:0 b
+b 0    R,R,P:1 b
+b 1    R,R,P:0 b
 ```
 The first line is empty and specifies the initial tape configuration (empty: the default). The
 second line specifies the initial state is 'b'. The next two lines are comments and are ignored

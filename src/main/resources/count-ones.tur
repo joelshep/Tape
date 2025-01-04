@@ -10,7 +10,7 @@ scanl
 ;; results.
 ;; scan1 Initializes the initial count (0), or scans left until it finds the 'e' separating
 ;; the count from the initial sequence, before incremeenting the count.
-scanl   null P:e L P:0 R R findone
+scanl   null P:e,L,P:0,R,R findone
 scanl   0    L             scanl
 scanl   1    L             scanl
 scanl   x    L             scanl
@@ -25,7 +25,7 @@ findone 1    P:x           scanl
 ;; Starting from the 'e' separator, increment the count by one.
 addone  null P:1           iter
 addone  e    L             addone
-addone  1    P:0 L         addone
+addone  1    P:0,L         addone
 addone  0    P:1           iter
 ;; Scan over the count to find the 'e' separator before searching for the next '1'.
 iter    0    R             iter

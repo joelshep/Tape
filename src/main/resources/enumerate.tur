@@ -3,11 +3,11 @@ init
 ;; Enumerates the integers from 0 on up to 2^8192. Takes a long time to run ;-). Recommend
 ;; not running this outside the debugger. This was the first Turing Machine program that I
 ;; wrote myself.
-init null P:0 R P:x  add1
+init null P:0,R,P:x  add1
 add1 null P:1        scan
 add1 x    L          add1
 add1 0    P:1        scan
-add1 1    P:0 L      add1
+add1 1    P:0,L      add1
 scan 0    R          scan
 scan 1    R          scan
 scan x    N          add1
