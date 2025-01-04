@@ -1,7 +1,5 @@
 package org.ulithi.tape;
 
-import java.util.Arrays;
-
 /**
  * Utility class to read "programs" from a file or input stream, and transform them to a format
  * that can be processed by the {@link Machine}.
@@ -39,11 +37,11 @@ public class Reader {
         final String initialTape = lines[0].trim();
 
         if (!initialTape.isBlank()) {
-            program.initialTape = new Character[(initialTape.length() + 1) / 2];
+            program.initialSeq = new Character[(initialTape.length() + 1) / 2];
 
             for (int i = 0; i < initialTape.length(); i++) {
                 char chr = initialTape.charAt(i++);
-                program.initialTape[i / 2] = chr == ' ' ? null : chr;
+                program.initialSeq[i / 2] = chr == ' ' ? null : chr;
             }
         }
 

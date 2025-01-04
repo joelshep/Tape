@@ -1,0 +1,8 @@
+
+a
+;; Starting from 1, repeatedly multiplies by 2 in binary, effectively by shifting the initial
+;; 1 left position by position. Will continue until it reaches 2^2049, which is a large number.
+;; Note that since the tape moves in a single direction (left), this is an O(N) program in terms
+;; of performance (time complexity), unlike the other examples which are all O(N^2).
+a null P:1 b
+b 1 P:0 L P:1 b

@@ -1,0 +1,8 @@
+
+b
+;; Prints alternating 0's and 1's in alternating squares. This is the first example
+;; given in Turing's "On Computable Numbers".
+b null P:0 R c
+c null R d
+d null P:1 R e
+e null R b

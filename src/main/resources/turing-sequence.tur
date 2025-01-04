@@ -1,0 +1,22 @@
+
+init
+;; Prints a series of repeating sequences of 1's, each one being one symbol longer than the
+;; preceding sequence: i.e., 0 1 0 1 1 0 1 1 1 0 1 1 1 1 .... This is the third example in
+;; Turing's "On Computable Numbers", but the state names have been changed for easier
+;; comprehension.
+init    null P:e R P:e R P:0 R R P:0 L L mark
+mark    1    R P:x L L L                 mark
+mark    0    N                           scan-p1
+scan-p1 null P:1 L                       return
+scan-p1 0    R R                         scan-p1
+scan-p1 1    R R                         scan-p1
+scan-p1 e    R R                         scan-p1
+scan-p1 x    R R                         scan-p1
+return  x    E R                         scan-p1
+return  e    R                           scan-p0
+return  null L L                         return
+scan-p0 null P:0 L L                     mark
+scan-p0 0    R R                         scan-p0
+scan-p0 1    R R                         scan-p0
+scan-p0 e    R R                         scan-p0
+scan-p0 x    R R                         scan-p0

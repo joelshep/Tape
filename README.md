@@ -55,8 +55,8 @@ The Turing Machine implemented in Tape has a tape with a default length of 8192 
 square can hold a single 16-bit character, so the default capacity of the machine is 8192
 16-bit words, or 16 KB.
 
-The "head" of the reader -- i.e., the initial scanned square -- defaults to the middle of the
-tape: the square with index 4096.
+The "head" of the reader -- i.e., the initial scanned square -- defaults to the square with
+index 2048: about 1/4 of the length of the tape from the leftmost (zero-index) square.
 
 The machine understands six instructions:
 * R - Move the head one square to the right.
