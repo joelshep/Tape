@@ -1,6 +1,6 @@
 package org.ulithi.tape;
 
-import java.io.IOException;
+import org.ulithi.tape.notifier.Notifier;
 
 /**
  * An implementation of a Turing machine. Turing machines are really very simple. Most of the
@@ -29,15 +29,11 @@ public class Machine {
     /** Indicates if the machine has been halted. */
     private boolean halted = false;
 
-    /** Indicates if the machine is running in debug mode. */
-    private boolean debug = false;
-
     /**
-     * windowMin and windowMax are for display purposes only. They are the minimum and maximum
-     * indices of the squares to be displayed when the tape is displayed.
+     * Notifier, for debugging and displaying machine state at intermediate points during
+     * processing.
      */
-    private int windowMin;
-    private int windowMax;
+    private Notifier notifier = new Notifier() { };
 
     /**
      * Initializes an instance of this machine with the default tape length.
@@ -53,16 +49,15 @@ public class Machine {
     public Machine(final int length) {
         tape = new Character[length];
         head = tape.length / 4;
-        windowMin = Math.max(0, head - 2);
-        windowMax = Math.min(tape.length, head + 4);
     }
 
     /**
-     * Enables or disables debug mode.
-     * @param debug If true, enables debug mode; if false, disables it.
+     * Sets a {@link Notifier} to support debugging, etc., for this machine
+     * @param notifier The {@code Notifier} for this machine to publish notifications to
+     *                 during processing.
      */
-    public void setDebug(final boolean debug) {
-        this.debug = debug;
+    public void setNotifier(final Notifier notifier) {
+        this.notifier = notifier;
     }
 
     /**
@@ -81,9 +76,11 @@ public class Machine {
         }
 
         Character scanned = tape[head];
+        Configuration config = null;
 
         while (!halted) {
-            Configuration config = findMConfiguration(state, scanned, program.configurations);
+            config = findMConfiguration(state, scanned, program.configurations);
+            notifier.beforeMove(config, head, tape.clone());
 
             if (config == null) {
                 throw new RuntimeException(
@@ -94,11 +91,9 @@ public class Machine {
                 switch (config.operations[i]) {
                     case Program.RIGHT:
                         head++;
-                        windowMax = Math.max(windowMax, head);
                         break;
                     case Program.LEFT:
                         head--;
-                        windowMin = Math.min(windowMin, head);
                         break;
                     case Program.PRINT:
                         tape[head] = config.symbols[i];
@@ -117,22 +112,13 @@ public class Machine {
                 }
 
                 scanned = tape[head];
-                printState(config, i);
+                notifier.afterMove(config, i, head, tape.clone());
             }
 
             state = config.outState;
-
-            if (debug) {
-                System.out.println("Press Enter to continue ...");
-                try {
-                    System.in.read();
-                } catch (IOException e) {
-                    // Swallow it
-                }
-            }
         }
 
-        System.out.println("Halted ...");
+        notifier.onHalt(config, head, tape.clone());
     }
 
     /**
@@ -147,8 +133,6 @@ public class Machine {
         }
 
         System.arraycopy(initialSeq, 0, machineTape, head, initialSeq.length);
-
-        windowMax = head + initialSeq.length + 1;
     }
 
     /**
@@ -176,37 +160,5 @@ public class Machine {
         }
 
         return nullScannedConfiguration;
-    }
-
-    /**
-     * Writes the current state of the machine to STDOUT, including the m-configuration (state and
-     * symbol) and head position indicator.
-     * @param config The machine configuration for the move just completed.
-     * @param step The zero-based index of the just-executed instruction in the move.
-     */
-    private void printState(final Configuration config, final int step) {
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append(String.format("%-10s", config.inState))
-                .append(' ')
-                .append(config.operations[step])
-                .append(':')
-                .append(config.symbols[step] == null ? ' ' : config.symbols[step])
-                .append(' ');
-
-        for (int i = windowMin; i <= windowMax; i++) {
-            sb.append("| ").append(tape[i] == null ? ' ' : tape[i]).append(' ');
-        }
-
-        sb.append("|\n");
-        sb.append(" ".repeat(15));
-
-        for (int i = windowMin; i <= windowMax; i++) {
-            sb.append(head == i ? "  ^ " : "    ");
-        }
-
-        sb.append('\n');
-
-        System.out.print(sb);
     }
 }

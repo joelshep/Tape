@@ -1,5 +1,8 @@
 package org.ulithi.tape;
 
+import org.ulithi.tape.notifier.DebugNotifier;
+import org.ulithi.tape.notifier.StepNotifier;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,6 +14,10 @@ import java.util.Scanner;
  * machine "programs".
  */
 public class Main {
+
+    /** Constants for readability: true->debug mode, false->run mode. */
+    private static final boolean RUN_MODE = false;
+    private static final boolean DEBUG_MODE = true;
 
     /**
      * Reads and parses the specified program, and passes it to the machine for execution.
@@ -40,10 +47,10 @@ public class Main {
                     displaySource(source);
                     break;
                 case 'r':
-                    parseAndRunProgram(source, false);
+                    parseAndRunProgram(scanner, source, RUN_MODE);
                     break;
                 case 'd':
-                    parseAndRunProgram(source, true);
+                    parseAndRunProgram(scanner, source, DEBUG_MODE);
                     break;
                 case 'q':
                     scanner.close();
@@ -58,6 +65,12 @@ public class Main {
         }
     }
 
+    /**
+     * Prompts the user for a path to the "program"/configuration file for the machine, reads
+     * it and returns it as a String.
+     * @param scanner Scanner used to handle user response to file pathname prompt.
+     * @return The user's selected file contents as a String, or null if the file can't be read.
+     */
     private static String loadProgram(final Scanner scanner) {
         final String cwd = System.getProperty("user.dir");
         System.out.println("  Enter file path (" + cwd + "): ");
@@ -95,12 +108,25 @@ public class Main {
         return null;
     }
 
+    /**
+     * Writes the loaded machine "program"/configuration to STDOUT.
+     * @param source The currently loaded machine program/configuration.
+     */
     private static void displaySource(final String source) {
         System.out.println("Currently loaded source:");
         System.out.println(source);
     }
 
-    private static void parseAndRunProgram(final String source, final boolean debug) {
+    /**
+     * Parses the loaded program and initiates machine-processing of it.
+     * @param scanner Scanner for reading user input from STDIN: needed if running the
+     *                program in the debugger.
+     * @param source The currently loaded machine program/configuration.
+     * @param mode Indicates if the machine will run in debug mode (true) or normal execution
+     *             mode (false).
+     */
+    private static void parseAndRunProgram(
+            final Scanner scanner, final String source, final boolean mode) {
         if (source == null || source.isBlank()) {
             System.err.println("No source loaded: use 'l' option to load a program");
             return;
@@ -109,10 +135,19 @@ public class Main {
         Program program = Parser.parseSource(source);
 
         Machine machine = new Machine();
-        machine.setDebug(debug);
+
+        if (mode == DEBUG_MODE) {
+            machine.setNotifier(new DebugNotifier(scanner));
+        } else {
+            machine.setNotifier(new StepNotifier());
+        }
+
         machine.run(program);
     }
 
+    /**
+     * Prints a short help message describing the REPL commands.
+     */
     private static void help() {
         final String message =
                 """
