@@ -31,10 +31,10 @@ described by British mathematician Alan Turing in his 1936 paper "On Computable 
 Application to the Entscheidungsproblem". Turing machines are very simple, yet are theoretically
 capable of any symbolic computation: i.e., capable of anything that any digital computer is capable
 of and more. In essence, a Turing machine consists of a simple paper tape, divided into squares,
-and a device with a head that can read the symbol on the square currently underneath it (the
-"current square"), print a symbol on the current square, erase the current square, or move the
-head on square left or right. That's it. (Tape provides an additional "no-op" action which can
-make writing programs a little easier, but I may remove it at some point.)
+and a device with a head that can read, or "scan", the symbol on the square currently underneath it
+(the "current square"), print a symbol on the current square, erase the current square, or move the
+head on square left or right. That's it. Tape provides an additional "no-op" action which can
+make writing programs a little easier, but I may remove it at some point.
 
 These links have more information on Turing machines:
 * https://samwho.dev/turing-machines/ - A great interactive intro to Turing machines.
@@ -48,7 +48,7 @@ functionality in Tape is around loading and debugging programs written for the m
 the language used to specify the programs is so minimal and because so many "moves" (as Turing
 referred to them) are needed to carry out even simple tasks like adding 4-bit numbers, debugging
 can be challenging. So Tape provides basic functionality for stepping through programs, setting
-breakpoints (yet to be implemented), limiting execution times and so on.
+breakpoints, limiting execution times (yet to be implemented) and so on.
 
 ## Basics of The Machine
 The Turing Machine implemented in Tape has a tape with a default length of 8192 "squares". A
@@ -99,7 +99,7 @@ b 1    R,R,P:0 b
 The first line is empty and specifies the initial tape configuration (empty: the default). The
 second line specifies the initial state is 'b'. The next two lines are comments and are ignored
 by the machine (more correctly: are removed before the machine begins processing the following
-configuratings). The remaining lines specify the possible m-configurations and corresponding moves.
+configurations). The remaining lines specify the possible m-configurations and corresponding moves.
 For instance, the first configuration will be selected and processed if the current state is 'b',
 and the current value read from the tape is null (empty square) or any character other than the
 '0' and '1' specified by the other two configurations. If that configuration is selected, the
@@ -108,7 +108,7 @@ and end in the same state).
 
 On the next iteration, the machine will see that it is in state 'b' and the current value under
 the head is '0', so it will select the m-configuration which will instruct it to move right two
-squares and print '1', and then remain in state 'b'. The final m-configuration will be matched
+squares and print '1', and then remain in state 'b'. The next m-configuration will be matched
 causing the machine to move right two squares, print '0', and loop back to the previous
 m-configuration.
 
@@ -122,16 +122,21 @@ When Tape starts, you'll see a bit of introductory info and then the prompt for 
 ```
 Enter 'h' for a short help document. The usual flow is that you enter 'l' to load the program
 to run -- specify an absolute path to the file or a path relative to the current working
-directory -- and then either 'r' to run the program or 'd' to run it in the debugger. Currently,
-running it in the debugger simply enables you to step through the m-configurations as they're 
-selected and processed, while seeing the data on the tape and position of the head.
+directory -- and then either 'r' to run the program or 'd' to run it in the debugger. In the
+debugger you can step through the code move by move, set breakpoints for one or more m-configurations,
+list and delete breakpoints, run code to a breakpoint or until the program halts (if it ever does).
+You can also trace code execution, which simply prints the machine state instruction-by-instruction.
 
 Enter 'q' to quit Tape, or 's' to list the program source.
 
-The debugger will eventually offer several basic commands:
+The debugger offers several basic commands:
 * s - Step through the program, configuration by configuration.
 * b <breakpoint> - Set a breakpoint by specifying the state and current value to stop
-at: e.g. "findone 1".
+at: e.g. "b findone:1".
+* d <breakpoint> - Deletes a breakpoint.
+* l - List breakpoints.
+* x - Delete all breakpoints.
+* t - Trace program execution.
 * c - Continue to the next breakpoint or end of the program.
 * g - Continue until the end of the program (exits the debugger).
 * q - Quit tape.
